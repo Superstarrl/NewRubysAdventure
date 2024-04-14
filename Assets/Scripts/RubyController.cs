@@ -12,6 +12,9 @@ public class RubyController : MonoBehaviour
     
     public AudioClip throwSound;
     public AudioClip hitSound;
+
+    public ParticleSystem hitEffect;
+    public ParticleSystem healEffect;
     
     public int health { get { return currentHealth; }}
     int currentHealth;
@@ -104,11 +107,13 @@ public class RubyController : MonoBehaviour
             invincibleTimer = timeInvincible;
             
             PlaySound(hitSound);
+            Instantiate(hitEffect, rigidbody2d.position, Quaternion.identity);
         }
+        else Instantiate(healEffect, rigidbody2d.position, Quaternion.identity);
         
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
-        
         UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
+        
     }
     
     void Launch()

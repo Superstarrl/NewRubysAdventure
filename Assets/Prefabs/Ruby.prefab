@@ -106,6 +106,8 @@ MonoBehaviour:
   projectilePrefab: {fileID: 8183377510977272414, guid: 318cfed967e236f4cb5bd8f0e8a075cf, type: 3}
   throwSound: {fileID: 8300000, guid: b2edfd40873655249ba0e01a5cf705be, type: 3}
   hitSound: {fileID: 8300000, guid: 9b1bb1f450b7d444fa4a8019d13519a7, type: 3}
+  hitEffect: {fileID: 4996064426208189837, guid: 5e5c3d2f8bbea4b4cbaf19c7977f5db0, type: 3}
+  healEffect: {fileID: 8246820883864549560, guid: e5b61db05a1e30541960f336d492ff1b, type: 3}
   timeInvincible: 2
 --- !u!50 &3016784015183933506
 Rigidbody2D:
