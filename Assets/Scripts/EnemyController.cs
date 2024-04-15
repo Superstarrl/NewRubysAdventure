@@ -85,5 +85,6 @@ public class EnemyController : MonoBehaviour
         rigidbody2D.simulated = false;
         smokeEffect.Stop();
         animator.SetTrigger("Fixed");
+        ScoreManager.scoreCount += 1;
     }
 }
