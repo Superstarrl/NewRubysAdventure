@@ -22,6 +22,18 @@ public class RubyController : MonoBehaviour
     public float timeInvincible = 2.0f;
     bool isInvincible;
     float invincibleTimer;
+
+    //added by Anthony
+    public int clipSize = 3;
+    public static int cogsLoaded = 0;
+    public float reloadTime = 1.0f;
+    public GameObject reloadText;
+    public GameObject needsToReload;
+    bool isReloading;
+    float reloadTimer;
+    float textTimer;
+    public AudioClip emptyClip;
+    public AudioClip reloadingClip;
     
     Rigidbody2D rigidbody2d;
     float horizontal;
@@ -39,6 +51,7 @@ public class RubyController : MonoBehaviour
         animator = GetComponent<Animator>();
         
         currentHealth = maxHealth;
+        cogsLoaded = clipSize;
 
         audioSource = GetComponent<AudioSource>();
     }
@@ -68,11 +81,6 @@ public class RubyController : MonoBehaviour
                 isInvincible = false;
         }
         
-        if(Input.GetKeyDown(KeyCode.C))
-        {
-            Launch();
-        }
-        
         if (Input.GetKeyDown(KeyCode.X))
         {
             RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * 0.2f, lookDirection, 1.5f, LayerMask.GetMask("NPC"));
@@ -84,6 +92,57 @@ public class RubyController : MonoBehaviour
                     character.DisplayDialog();
                 }
             }
+        }
+
+        //added by Anthony
+        if (isReloading)
+        {
+            reloadTimer -= Time.deltaTime;
+            if (reloadTimer <= 0)
+            {
+                cogsLoaded = clipSize;
+                isReloading = false;
+                reloadText.SetActive(false);
+            }
+        }
+
+        if (textTimer > 0) {
+            textTimer -= Time.deltaTime;
+            if (textTimer <= 0) {
+                needsToReload.SetActive(false);
+            }
+        }
+
+        //added by Anthony
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (cogsLoaded == clipSize || isReloading == true)
+                {
+                    return;
+                }
+                else
+                {
+                    isReloading = true;
+                    reloadTimer = reloadTime;
+                    needsToReload.SetActive(false);
+                    reloadText.SetActive(true);
+                    PlaySound(reloadingClip);
+                }
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            //changed by Anthony
+            if (isReloading == false) {
+                if (cogsLoaded > 0) {
+                    Launch();
+                }
+                else {
+                    PlaySound(emptyClip);
+                    needsToReload.SetActive(true);
+                    textTimer = 1.0f;
+                }
+            }   
         }
     }
     
@@ -113,7 +172,11 @@ public class RubyController : MonoBehaviour
         
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
-        
+        print ("changehealth");
+        if ( currentHealth <= 0) {
+            ScoreManager.isDead = true;
+        }
+
     }
     
     void Launch()
@@ -126,6 +189,9 @@ public class RubyController : MonoBehaviour
         animator.SetTrigger("Launch");
         
         PlaySound(throwSound);
+
+        //added by Anthony
+        cogsLoaded--;
     } 
     
     public void PlaySound(AudioClip clip)

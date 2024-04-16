@@ -2,23 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 public class ScoreManager : MonoBehaviour
 {
     public Text scoreText;
     public static int scoreCount;
-    public GameManagerScript winManager;
+    public static bool isDead;
     public GameObject winTextObject;
-
-    private bool isWin;
-
-    public GameManagerScript restartScript;
+    public GameObject loseTextObject;
 
 
     // Start is called before the first frame update
     void Start()
     {
         winTextObject.SetActive(false) ;
-       restartScript = FindObjectOfType<GameManagerScript>();
+        loseTextObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -26,30 +25,32 @@ public class ScoreManager : MonoBehaviour
     {
         scoreText.text = "Fixed Robots: " + scoreCount;
        
+        //score is updated in rubycontroller
         if (scoreCount >= 2) 
         {
             winTextObject.SetActive(true);
-            restartScript.gameWin();
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.Y))
             {
                 Reboot();
-
             }
-
-
-
         }
-        
-        
+
+        //death status is set true in rubycontroller
+        if (isDead) {
+            loseTextObject.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                Reboot();
+            }
+        }   
     }
+
     void Reboot()
     {
         winTextObject.SetActive(false);
+        loseTextObject.SetActive(false);
         scoreCount = 0;
-    }
-
-    
-   
-
-        
+        isDead = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }     
 }
